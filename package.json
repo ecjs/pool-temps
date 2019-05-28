@@ -1,0 +1,28 @@
+{
+  "name": "pooltemp",
+  "version": "1.0.0",
+  "description": "Zodiak [iAquaLink](https://www.iaqualink.com/) pool temperature logger.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node -r dotenv/config app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RByers/pooltemp.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RByers/pooltemp/issues"
+  },
+  "homepage": "https://github.com/RByers/pooltemp#readme",
+  "dependencies": {
+    "@google-cloud/datastore": "^4.0.0",
+    "express": "^4.17.0",
+    "humanize-duration": "^3.18.0",
+    "node-fetch": "^2.6.0",
+    "node-gmail-sender": "^1.1.6",
+    "dotenv": "^8.0.0"
+  }
+}

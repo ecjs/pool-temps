@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<p>My pool temperature monitor</p>
+<div style="margin: 0 auto; max-width: 800px;">
+    <canvas id="myChart" width="400" height="400"></canvas>
+</div>
+
+<script>
+    async function getChartData () {
+        console.log('grabbing data!')
+        const results = await axios.get('/chart-data')
+        const filteredResults = [
+            {
+                label: 'Pool',
+                borderColor: 'rgb(0, 119, 204)',
+                backgroundColor: 'rgb(0, 119, 204)',
+                fill: false,
+                data: [],
+            },
+            {
+                label: 'Spa',
+                borderColor: 'rgb(99, 17, 208)',
+                backgroundColor: 'rgb(99, 17, 208)',
+                fill: false,
+                data: [],
+            },
+            {
+                label: 'Air',
+                borderColor: 'rgb(11, 249, 238)',
+                backgroundColor: 'rgb(11, 249, 238)',
+                fill: false,
+                data: [],
+            },
+        ];
+        for (let temps of results.data) {
+            filteredResults[0].data.push({x: new Date(temps.timestamp), y: Number(temps.pool)})
+            filteredResults[1].data.push({x: new Date(temps.timestamp), y: Number(temps.spa)})
+            filteredResults[2].data.push({x: new Date(temps.timestamp), y: Number(temps.air)})
+        }
+        return filteredResults;
+    }
+
+    async function plotData () {
+        const filteredData = await getChartData();
+        console.log(filteredData)
+        console.log('plotting data!')
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                datasets: filteredData
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Pool/Spa Temp Time Data'
+                },
+                scales: {
+                    xAxes: [{
+                        type: 'time',
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Date'
+                        },
+                        ticks: {
+                            major: {
+                                fontStyle: 'bold',
+                                fontColor: '#FF0000'
+                            }
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Temps'
+                        }
+                    }]
+                }
+            }
+        });
+    }
+    plotData().then(() => console.log('data plotted!')).catch(e => console.log(e))
+    </script>
+
+
+<a href="/log.csv">Get the log</a><br>
+<a href="/update">Update the log</a><br>
